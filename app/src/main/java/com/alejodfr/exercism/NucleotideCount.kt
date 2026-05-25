@@ -31,15 +31,15 @@ package com.alejodfr.exercism
  *   "INVALID" -> error
  */
 
-class Dna(val input: String) {  // constructor — recibe el String
+class Dna(val input: String) {
+
+    init {
+        input.filter { it != 'A' && it != 'C' && it != 'G' && it != 'T' }
+            .forEach { throw IllegalArgumentException("Invalid nucleotide: $it") }
+    }
 
     val nucleotideCounts: Map<Char, Int>
-        get() {                  // se calcula cuando la llamas
-            // 1. validar
-            input.filter { it != 'A' && it != 'C' && it != 'G' && it != 'T' }
-                .forEach { throw IllegalArgumentException("Invalid nucleotide: $it") }
-
-            // 2. contar y retornar
+        get() {
             return mapOf(
                 'A' to input.count { it == 'A' },
                 'C' to input.count { it == 'C' },
