@@ -82,23 +82,31 @@ fun main() {
  *
  *   class Dna(val input: String) {
  *       val nucleotideCounts: Map<Char, Int>
- *           get() { ... }
+*           get() { ... }
  *   }
  *
- * ## Paso 3 — Validar el input
+ * ## Paso 3 — Validar el input con `init`
  *
- * Filtrar los caracteres que no sean A, C, G o T.
- * Si existe alguno, lanzar IllegalArgumentException.
+ * IMPORTANTE: la validación debe ir en el bloque `init`, NO dentro de get().
+ *
+ * ¿Por qué? Porque init se ejecuta al momento de crear el objeto:
+ *   Dna("AGXXACT")  <- la excepción se lanza aquí
+ *
+ * Si la validación estuviera en get(), solo se ejecutaría cuando
+ * alguien llame dna.nucleotideCounts — y algunos tests crean el objeto
+ * sin llamar esa propiedad, por lo que nunca detectarían el error.
  *
  * Usamos filter() para quedarnos con los caracteres inválidos,
  * y forEach() para lanzar la excepción por cada uno encontrado.
  *
  * Nota: el operador entre condiciones es && (Y) no || (O).
- * Con ||, un carácter 'A' cumpliría it != 'C' y siempre filtraría todoo.
+ * Con ||, un carácter 'A' cumpliría it != 'C' y siempre filtraría todo.
  * Con &&, solo filtra si NO es ninguna de las cuatro letras válidas.
  *
- *   input.filter { it != 'A' && it != 'C' && it != 'G' && it != 'T' }
- *        .forEach { throw IllegalArgumentException("Invalid nucleotide: $it") }
+ *   init {
+ *       input.filter { it != 'A' && it != 'C' && it != 'G' && it != 'T' }
+ *            .forEach { throw IllegalArgumentException("Invalid nucleotide: $it") }
+ *   }
  *
  * ## Paso 4 — Contar los nucleótidos
  *
@@ -118,11 +126,14 @@ fun main() {
  * ## Resultado final
  *
  *   class Dna(val input: String) {
+ *
+ *       init {
+ *           input.filter { it != 'A' && it != 'C' && it != 'G' && it != 'T' }
+ *                .forEach { throw IllegalArgumentException("Invalid nucleotide: $it") }
+ *       }
+ *
  *       val nucleotideCounts: Map<Char, Int>
  *           get() {
- *               input.filter { it != 'A' && it != 'C' && it != 'G' && it != 'T' }
- *                    .forEach { throw IllegalArgumentException("Invalid nucleotide: $it") }
- *
  *               return mapOf(
  *                   'A' to input.count { it == 'A' },
  *                   'C' to input.count { it == 'C' },
@@ -138,5 +149,6 @@ fun main() {
  *   forEach { }  — ejecuta un bloque por cada elemento
  *   count { }    — cuenta cuántos elementos cumplen la condición
  *   throw        — lanza una excepción y detiene la ejecución
+ *   init         — se ejecuta al crear el objeto, ideal para validaciones
  *   get()        — propiedad calculada, se ejecuta cada vez que la llamas
  */
