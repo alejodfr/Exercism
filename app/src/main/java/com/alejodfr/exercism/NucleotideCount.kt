@@ -100,7 +100,7 @@ fun main() {
  * y forEach() para lanzar la excepción por cada uno encontrado.
  *
  * Nota: el operador entre condiciones es && (Y) no || (O).
- * Con ||, un carácter 'A' cumpliría it != 'C' y siempre filtraría todo.
+ * Con ||, un carácter 'A' cumpliría it != 'C' y siempre filtraría to-do.
  * Con &&, solo filtra si NO es ninguna de las cuatro letras válidas.
  *
  *   init {
