@@ -21,8 +21,9 @@ import java.math.BigInteger
  *
  * Write code that calculates:
  *
- * - The number of grains on a **given square**
- * - The **total number** of grains on the chessboard
+ *   - The number of grains on a **given square**
+ *   - The **total number** of grains on the chessboard
+ *
  */
 
 object Board {
@@ -48,3 +49,33 @@ fun main(){
     println("The number of grains on square $number is ${Board.getGrainCountForSquare(number)}")
     println("The total number of grains on the chessboard is ${Board.getTotalGrainCount()}")
 }
+
+/**
+* * ## Resolution Guide
+ *
+ * The number of grains on each square follows a powers-of-two pattern:
+ *
+ *   Square  | Grains | Expression
+ *   --------|--------|-----------
+ *   1       | 1      | 2^0
+ *   2       | 2      | 2^1
+ *   3       | 4      | 2^2
+ *   4       | 8      | 2^3
+ *   ...     | ...    | ...
+ *   n       | 2^(n-1) | 2^(n-1)
+ *
+ * Key points:
+ *
+ *   - Grains on square N = 2^(N - 1)
+ *   - Total grains on all 64 squares = 2^64 - 1
+ *
+ * Since the result exceeds the range of Int and Long, use BigInteger:
+ *
+ *   BigInteger.valueOf(2).pow(square - 1)
+ *
+ * For the total, sum all squares or use the formula:
+ *   2^64 - 1 (which equals 18,446,744,073,709,551,615)
+ *
+ * Edge case: square must be between 1 and 64 inclusive,
+ * otherwise throw IllegalArgumentException.
+* */
